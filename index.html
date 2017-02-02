@@ -9,6 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Laszlo Vincze" />
 
 
 <title>IODS course project</title>
@@ -133,31 +134,28 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">IODS course project</h1>
+<h4 class="author"><em>Laszlo Vincze</em></h4>
 
 </div>
 
 <div id="TOC">
 <ul>
 <li><a href="#about-the-project">About the project</a></li>
-<li><a href="#insert-chapter-2-title-here">Insert chapter 2 title here</a></li>
 </ul>
 </div>
 
 <hr />
 <div id="about-the-project" class="section level1">
 <h1>About the project</h1>
+<p>My page is located at: www.github.com/laszlovincze/IODS-project-2</p>
 <p><em>Write a short description about the course and add a link to your github repository here. This is an R markdown (.Rmd) file so you can use R markdown syntax. See the ‘Useful links’ page in the mooc area (chapter 1) for instructions.</em></p>
 <hr />
-</div>
-<div id="insert-chapter-2-title-here" class="section level1">
-<h1>Insert chapter 2 title here</h1>
-<p><em>Describe the work you have done this week and summarize your learning.</em></p>
-<ul>
-<li>Describe your work and results clearly.</li>
-<li>Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods</li>
-<li>Assume the reader has no previous knowledge of your data or the more advanced methods you are using</li>
-</ul>
-<hr />
+<p>Regression analysis</p>
+<p>Here comes a report of a regression analyses, which focuses on how attitude and three different learning styles affects the success in learning statisstics, assesed in points. The data was collected among students at the UH. After data management, the final dataset contained N = 166 participants. The average age of the participants was somewhat over 25 years; there were 110 female and 56 male participants.</p>
+<p>The dependent variable I use the analysis is Points. Theindependent variables were deep, surface and strategic learning styles, and attitudes toward learning. Age and gender were used as control variables.</p>
+<p>I performed some t-tests, correlational analyses to check the relevant bivariate relationships. Also, I visualized the bivariate relationsip between the theoretically relevant inndependent variables and points, and checked also how these relatinships differ between male and female students.</p>
+<p>I performed at least a dozen regressions with IVs in different combinations and included even interaction terms, but as a matter of fact, none of the models was really interesting. This is pity because I thought that attitudes and learning styles would interact in predicting points… Also, after visualising the data, I expected that the effect of deep learning style on points is moderated by gender; however, it was not the case.</p>
+<p>My final model included only attitude as explanatory variable. The model was significant, and explained 19% of the variance in the dependent variable, F(1, 164) = 38.61, p &lt;.001. The unstandardized regression coefficients of attitude was B=.35. This can be interpreted as more positive attitudes toward learning resultaed in higher points. However, I created plots to diagnostize model fit. Theere seems to be some violaationn against normality in each plot.</p>
 </div>
 
 
