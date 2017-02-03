@@ -1,0 +1,86 @@
+---
+title: "IODS course project"
+author: "Laszlo Vincze"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_depth: 2
+    fig_caption: true
+    fig_width: 6
+    fig_height: 4
+    code_folding: hide
+---
+
+***
+  
+```{r child = "chapter1.Rmd"}
+```
+  
+***
+  
+```{r child = "chapter2.Rmd"}
+```> cor.test(learning2014$Age, learning2014$Points)
+
+	Pearson's product-moment correlation
+
+data:  learning2014$Age and learning2014$Points
+t = -1.1986, df = 164, p-value = 0.2324
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ -0.24207559  0.05998263
+sample estimates:
+        cor 
+-0.09319032 
+
+> cor.test(learning2014$Attitude, learning2014$Points)
+
+	Pearson's product-moment correlation
+
+data:  learning2014$Attitude and learning2014$Points
+t = 6.2135, df = 164, p-value = 4.119e-09
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.3044463 0.5521335
+sample estimates:
+      cor 
+0.4365245 
+
+> t.test(learning2014$Points ~ learning2014$gender)
+
+	Welch Two Sample t-test
+
+data:  learning2014$Points by learning2014$gender
+t = -1.1832, df = 107.84, p-value = 0.2393
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -3.0896905  0.7799502
+sample estimates:
+mean in group F mean in group M 
+       22.32727        23.48214 
+
+> model <- lm(learning2014$Points ~ learning2014$Attitude + learning2014$gender + learning2014$Age)
+> summary(model)
+
+Call:
+lm(formula = learning2014$Points ~ learning2014$Attitude + learning2014$gender + 
+    learning2014$Age)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-17.4590  -3.3221   0.2186   4.0247  10.4632 
+
+Coefficients:
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)           13.42910    2.29043   5.863 2.48e-08 ***
+learning2014$Attitude  0.36066    0.05932   6.080 8.34e-09 ***
+learning2014$genderM  -0.33054    0.91934  -0.360    0.720    
+learning2014$Age      -0.07586    0.05367  -1.414    0.159    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.315 on 162 degrees of freedom
+Multiple R-squared:  0.2018,	Adjusted R-squared:  0.187 
+F-statistic: 13.65 on 3 and 162 DF,  p-value: 5.536e-08
+
+***
