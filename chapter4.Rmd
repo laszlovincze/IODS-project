@@ -1,3 +1,6 @@
+```{r}
+
+
 
 library(MASS)
 data("Boston")
@@ -86,3 +89,5 @@ km <-kmeans(dist_eu, centers = 3)
 k_max <- 10
 twcss <- sapply(1:k_max, function(k){kmeans(dist_eu, k)$tot.withinss})
 plot(1:k_max, twcss, type='b')
+
+```
