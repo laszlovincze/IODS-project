@@ -1,0 +1,88 @@
+
+library(MASS)
+data("Boston")
+head(Boston)
+str(Boston)
+dim(Boston)
+
+# The dataset implies a set of constructs measuring the
+# housing values in suburbs of Boston. The dataframe has 506 rows
+# and 14 columns.
+
+pairs(Boston)
+
+# It is pretty difficult to summarize and interpret, totally, (14x13)/2, i.e. 91 bivariate
+# relationships based on a single figure. So I made a correlation matrix. It appeared that there
+# are several significant relationships. I am wondering whether multicollinearity might not be
+# an issue in this analysis even if we standardize the variables.
+
+library(Hmisc)
+rcorr (as.matrix(Boston))
+
+# Next I standaridzed the variables and printed descriptive statistics. All variables had 0
+# as mean value and 1 as variance.
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+class(boston_scaled)
+
+#Here I create a categorical variable from the scaled crime rate. First quantile, median,
+# and third quantile are the cutting points; hence the new categorical crime variable has
+# four categories, with 126/126 cases belonging to each.
+boston_scaled <- as.data.frame(boston_scaled)
+scaled_crim <- scale(boston_scaled$crim)
+bins <- quantile(scaled_crim)
+crime <- cut(scaled_crim, breaks = bins, include.lowest = TRUE)
+table(crime)
+
+#I call for the dplyr package, and remove the old (i.e. non-categorical) crime
+# variable from the dataset, and add the categorical crime variable to the dataset.
+library(dplyr)
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+# Next, I shall divide the dataset into two. I am going to randomly choose 80%
+# of the participants to belong to one of the groups, called Train, and 20% to belong
+# the other group, called Test. 
+n <- nrow(boston_scaled)
+ind <- sample(n,  size = n * 0.8)
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+
+# Finally, I perform the linear discriminant analysis in the train data set. To my mind,
+# the output includes less information than that of Spss. I depict also the three functions.
+lda.fit <- lda(crime ~ ., data = train)
+lda.fit
+classes <- as.numeric(train$crime)
+plot(lda.fit, dimen = 2, col=classes, pch=classes)
+
+# At the outset of the LDA, I save the correct classes from test data, so that I can later test
+# whether I can predict them with the discriminant function I got i train data.
+correct_classes <- test$crime
+
+
+# I try to predict classes of the categorical crime variable in test data by the means of
+# the discriminant functions I got in train data and I contrast the two in a crosstab.
+lda.pred <- predict(lda.fit, newdata = test)
+table(correct = correct_classes, predicted = lda.pred$class)
+
+# All in all, 76 cases can be classified correctly in the test dataset by the mean of the
+# discriminant function we got from the train dataset. Looks to be impressive, but I guess
+# I should have required for more arguments in the lda call.
+
+
+###########################################################################################
+###########################################################################################
+
+# For further analysis, I removed all the objectis from the environment
+data("Boston")
+boston_scaled <- scale(Boston)
+
+#I perform a K-means cluster analysis.
+dist_eu <- dist(boston_scaled)
+summary(dist_eu)
+
+# Plotting went well with base R, but not with ggplot2.
+km <-kmeans(dist_eu, centers = 3)
+k_max <- 10
+twcss <- sapply(1:k_max, function(k){kmeans(dist_eu, k)$tot.withinss})
+plot(1:k_max, twcss, type='b')
