@@ -1,0 +1,89 @@
+---
+title: "Indec"
+author: "laszlovincze"
+date: "24 helmikuuta 2017"
+output: html_document
+---
+
+```{r}
+
+#I read in my dataset from SPSS.
+library(haven)
+ELIT2 <- read_sav("Z:/R/ELIT2.sav")
+head(ELIT2)
+
+#Here comes the descriptive statistics. I visualize the bivariate correlationations
+#between the quantitative variables with ggpairs. I remove all missing values from the data. I do not know how to add the jitter and colour arguments
+# to the ggpairs function. Mobility and Competition are skewed.
+library(GGally)
+library(ggplot2)
+plotdata <- na.omit(ELIT2)
+ggpairs(plotdata[, 2:5], title = "Correlation matrix")
+
+
+#The main analysis is done by the lavaan package. It is a mediational model with Parents (parents' mother tongue)
+#as IV, Vitality and Identity as mediators, and Competition and Mobility as DVs. 
+
+library(lavaan)
+
+ELIT2 <- data.frame(ELIT2$Par,ELIT2$Iden, ELIT2$Vit, ELIT2$Mob, ELIT2$Com)
+names(ELIT2) <- c("Par", "Iden", "Vit", "Mob", "Com")
+head(ELIT2)
+  
+#colnames(ELIT2) <- c("Par", "Iden", "Vit", "Mob", "Com")
+
+model <- " 
+Mob ~ c1*Par
+Com ~ c2*Par
+
+Mob ~ b1*Vit
+Mob ~ b2*Iden
+Com ~ b3*Vit
+Com ~ b4*Iden
+
+Iden ~ a1*Par
+Vit ~ a2*Par
+
+VitMob := a2*b1
+IdenMob := a1*b2
+VitCom := a2*b3
+IdenCom := a1*b4
+"
+
+
+fit <- sem(model, data = ELIT2, bootstrap = 10000)
+summary(fit, ci = TRUE, fit.measures=TRUE, rsquare = TRUE)
+boot.fit <- parameterEstimates(fit, boot.ci.type="bca.simple",level=0.95, ci=TRUE,standardized = FALSE)
+boot.fit
+
+#The following was done to ask for bootstrapped CIs for the indirect effects. Please note as R is slow, bootstrapping
+#takes quite a while.
+
+out <- as.data.frame(bootstrapLavaan(fit, R = 1000L, type = "ordinary"))
+out$VitCom <- out$a2 * out$b3
+out$IdenCom <- out$a1 * out$b4
+out$VitMob <- out$a2 * out$b1
+out$IdenMob <- out$a1 * out$b2
+  
+quantile(out$VitCom,  probs = c(.025, .975))
+quantile(out$IdenCom, probs = c(.025, .975))
+quantile(out$VitMob,  probs = c(.025, .975))
+quantile(out$IdenMob, probs = c(.025, .975))
+
+
+#Here comes the post-hoc test of the moderating effects by the means of Rockchalk. The significant interaction is also viualized.
+
+library(rockchalk)
+
+mod <- lm (Com ~ Iden*Vit, data=ELIT2)
+summary(mod)
+
+mod <- lm ( Mob ~ Iden*Vit, data=ELIT2)
+summary(mod)
+ps1 <- plotSlopes(mod, plotx = "Iden", modx = "Vit" , interval = "confidence")
+
+
+
+
+```
+
